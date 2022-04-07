@@ -1,4 +1,5 @@
 from google.cloud import dialogflow
+from googletrans import Translator
 from app.products.product_info import *
 from app.products.store_info import *
 from app.concerns.other_concern import *
@@ -29,6 +30,7 @@ class Bot:
         #one session is only for one customer
         self.session_client = dialogflow.SessionsClient()
         self.language_code = "en-US"
+        self.language = "en"
         self.session = self.session_client.session_path(project_id, self.session_id)
         self.intents = {}
         self.undetected_intent_count = 0
@@ -46,6 +48,7 @@ class Bot:
         #continuously take in user input (or maintain the conversation) 
         #until the user ends
         while True:
+            translator = Translator()
             user_input = input("You: ")
             #if user input is empty, prompt the input again
             if(not user_input):
@@ -53,6 +56,9 @@ class Bot:
                 continue
             #call dialogflow API to detect intent. If there is error, stop the program
             try:
+                translation = translator.translate(user_input, dest="en")
+                user_input = translation.text
+                self.language = translation.src
                 response = self.detect_intent_texts(user_input)
             except:
                 print("Bot: There is an error on our end. Please try again later.")
@@ -72,13 +78,13 @@ class Bot:
             # Set the undetected intent count to 0
             elif("product" in intent):# intent can be product-stock or product-nutrition or product-price
                 productName = response.parameters["product-name"]
-                print("Bot: " + self.route_to_handler(productName = productName, intent = intent))
+                print("Bot: " + translator.translate(self.route_to_handler(productName = productName, intent = intent), dest=self.language))
                 self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks about store, 
             # pass to store-info in route_to_handle. 
             # Set the undetected intent count to 0
             elif(intent == "store-info"):
-                print("Bot: " + self.route_to_handler(intent = intent, user_input = user_input))
+                print("Bot: " + translator.translate(self.route_to_handler(intent = intent, user_input = user_input), dest=self.language))
                 self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks for exchange or refund or feedback, 
             # direct to other concerns handler in route_to_handle
