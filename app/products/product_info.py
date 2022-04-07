@@ -1,6 +1,7 @@
 from app.database import MOCK_PRODUCT_DATA
 import re
 from app.products.base_handler import BaseHandler
+import wikipediaapi
 
 
 class ProductInfoHandler(BaseHandler):
@@ -18,6 +19,8 @@ class ProductInfoHandler(BaseHandler):
         self.stock_pattern = re.compile(r"(stock|how many|amount)", re.IGNORECASE)
         self.nutrition_pattern = re.compile(
             r"(calories|protein|carbs|carbohydrates|sugar|fat|nutrition|nutritional|weight|health|healthy)", re.IGNORECASE)
+        self.wiki_pattern = re.compile(
+            r"(wiki|wikipedia|learn|definition|define)", re.IGNORECASE)
 
     def dispose(self):
         super().dispose()
@@ -64,6 +67,8 @@ class ProductInfoHandler(BaseHandler):
             request = "price"
         elif self.stock_pattern.search(message):
             request = "stock"
+        elif self.wiki_pattern.search(message):
+            request = "wiki"
 
         # If the request is truly about product
         if request:
@@ -104,5 +109,12 @@ class ProductInfoHandler(BaseHandler):
         elif prod_msg_type == "nutrition":
             reply = "%s Nutrition Facts: Calories = %s, Protein = %s, Carbs = %s, Sugar = %s, Fat = %s." % (
                 product['name'].capitalize(), product['calories'], product['protein'], product['carbs'], product['sugar'], product['fat'])
+        elif prod_msg_type == "wiki":
+            wiki_wiki = wikipediaapi.Wikipedia('en')
+            prod_page = wiki_wiki.page(product['name'])
+            if prod_page.exists():
+                reply = "%s. To get more information, visit %s" % (prod_page.summary[0:300].split('.')[0], prod_page.fullurl)
+            else:
+                reply = "Sorry, Wikipedia has no information on this product."
 
         return reply

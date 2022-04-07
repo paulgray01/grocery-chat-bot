@@ -56,7 +56,7 @@ class Bot:
                 continue
             #call dialogflow API to detect intent. If there is error, stop the program
             try:
-                translation = translator.translate(user_input, dest="en")
+                translation = translator.translate(user_input)
                 user_input = translation.text
                 self.language = translation.src
                 response = self.detect_intent_texts(user_input)
@@ -78,13 +78,13 @@ class Bot:
             # Set the undetected intent count to 0
             elif("product" in intent):# intent can be product-stock or product-nutrition or product-price
                 productName = response.parameters["product-name"]
-                print("Bot: " + translator.translate(self.route_to_handler(productName = productName, intent = intent), dest=self.language))
+                print("Bot: " + translator.translate(self.route_to_handler(productName = productName, intent = intent), dest=self.language).text)
                 self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks about store, 
             # pass to store-info in route_to_handle. 
             # Set the undetected intent count to 0
             elif(intent == "store-info"):
-                print("Bot: " + translator.translate(self.route_to_handler(intent = intent, user_input = user_input), dest=self.language))
+                print("Bot: " + translator.translate(self.route_to_handler(intent = intent, user_input = user_input), dest=self.language).text)
                 self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks for exchange or refund or feedback, 
             # direct to other concerns handler in route_to_handle
@@ -122,14 +122,14 @@ class Bot:
             text_input = dialogflow.TextInput(text=text, language_code=self.language_code)
             # Call Dialogflow API
             query_input = dialogflow.QueryInput(text=text_input)
-
+            
             response = self.session_client.detect_intent(
                 request={"session": self.session, "query_input": query_input}
             )
             return response.query_result
         except:
             raise Exception("Dialogflow API error")
-
+        
     #Based on intent, route to appropriate handler and return response for user input.
     def route_to_handler(self, **kwargs):
         """
