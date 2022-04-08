@@ -1,5 +1,5 @@
 ## Products and Store info
-This mini-bot will handle any question related to product price, stock, and store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main bot.
+This mini-bot will handle any question related to product price, stock, nutrition, and more info from Wikipedia, as well as store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main bot.
 
 -------------------------
 -------------------------

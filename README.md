@@ -28,8 +28,7 @@ The chatbot will do so by doing a basic check of the user input, and redirecting
 
 ## Setup
 
-The Google cloud key needs to be obtained by contacting `ngan.phan@ubc.ca
-` to run the full bot.
+The Google cloud key needs to be obtained by contacting `paulgray01@icloud.com` to run the full bot.
 
 ### Windows (PowerShell)
 
@@ -70,13 +69,13 @@ python3 main.py
 
 ## Main Bot
 
-The main bot will handle all inputs and ouputs from the user.
+The main bot will handle all inputs and ouputs from the user, including translation for queries relating to store or product information.
 
 See in-depth documentation [here](app/greetings/README.md).
 
 ## Product & Store Mini-bots
 
-This mini-bot will handle any question related to product price, stock, nutrition, and store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main bot.
+This mini-bot will handle any question related to product price, stock, nutrition, and more info from Wikipedia, as well as store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main bot.
 
 See in-depth documentation [here](app/products/README.md).
 
@@ -177,7 +176,7 @@ output = db.get_product("id", "4011")
 # returns list: [OrderedDict([('id', '4011'), ('name', 'banana'), ('names', 'bananas'), ('price', 0.67), ('price_scale', 'per kg'), ('in_stock', True), ('calories', 89), ('protein', '1.1 g'), ('carbs', '22.8 g'), ('sugar', '12.2 g'), ('fat', '0.3 g')])]
 ```
 
-## New Features
+## New Features (Assignment 3)
 
 ### Nutrition Sub-Topic
 
@@ -214,3 +213,17 @@ With Named Entity Recognition handled by Google's Diagflow API, the bot will pro
 With Sentiment Analysis handled by Google's Diagflow API, the bot will provide a more accurate response to the user.
 
 ![correcttion-snippet](snippets/sentiment.PNG)
+
+## New Features (Individual Project)
+
+### Translation (using googletrans API)
+
+Using googletrans, this feature allows for translation of user queries and bot responses using Google Translate. Currently, the bot can translate user queries of any supported language into english for processing, then will return a response in the same language that the user asked in (limited to queries related to product and store information).
+
+![translate-snippet](snippets/translate.png)
+
+### Additional Information w/ Wikipedia (using Wikipedia-API)
+
+Using wikipediaapi, this feature allows the user to request additional information about a certain product so that they can learn more. The bot will return the first key sentence from the given product's Wikipedia page, and then provide the link if the user wants to investigate further.
+
+![wiki-snippet](snippets/wikipedia.png)
